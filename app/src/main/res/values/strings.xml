@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">PicPay</string>
     <string name="title">Contatos</string>
+    <string name="failure">voce esta sem internet, tente novenae mais tarde</string>
+    <string name="try_later">Tente mais tarde</string>
 
 </resources>

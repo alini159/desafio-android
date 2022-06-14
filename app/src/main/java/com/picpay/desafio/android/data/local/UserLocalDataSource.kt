@@ -1,7 +1,8 @@
-package com.picpay.desafio.android.domain.local
+package com.picpay.desafio.android.data.local
 
 import androidx.lifecycle.LiveData
 import com.picpay.desafio.android.data.database.UserDao
+import com.picpay.desafio.android.domain.interfaces.UserLocalDataSource
 import com.picpay.desafio.android.domain.model.User
 import com.picpay.desafio.android.domain.model.UserLocal
 import kotlinx.coroutines.CoroutineScope
@@ -30,9 +31,4 @@ class UserLocalDataSourceImp(private val dao: UserDao) : UserLocalDataSource {
             )
         }
     }
-}
-
-interface UserLocalDataSource {
-    fun insert(users: List<User>)
-    fun getUser(): LiveData<List<UserLocal>?>
 }

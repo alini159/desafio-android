@@ -1,5 +1,7 @@
 package com.picpay.desafio.android.presenter.view
 
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -7,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.picpay.desafio.android.R
+import com.picpay.desafio.android.domain.model.UserResponse.*
 import com.picpay.desafio.android.presenter.adapter.UserListAdapter
-import com.picpay.desafio.android.domain.model.UserResponse
 import com.picpay.desafio.android.presenter.viewmodel.UserListViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,36 +24,29 @@ class UserListActivity : AppCompatActivity(R.layout.activity_user_list) {
     private lateinit var adapter: UserListAdapter
     private val viewModel: UserListViewModel by viewModel()
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         configureRecyclerView()
-        getUsers()
+        loadUserList()
     }
 
-    private fun getUsers() {
-        loadLocalList()
-        loadApiList()
-    }
-
-    private fun loadLocalList() {
+    private fun loadUserList() {
         viewModel.getUser().observe(this, Observer {
-            if (it.isNullOrEmpty()) {
-              Toast.makeText(this, "Tente novamente mais tarde", Toast.LENGTH_LONG).show()
-            } else {
-                adapter.differ.submitList(it)
-            }
+            adapter.differ.submitList(it)
         })
-    }
-
-    private fun loadApiList() {
         viewModel.liveData.observe(this, Observer {
             when (it) {
-                is UserResponse.Failure -> {
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(this,"voce esta sem internet, tente novamente mais tarde", Toast.LENGTH_LONG).show()
+                is Loading -> {
+                    progressBar.visibility = View.VISIBLE
                 }
-                is UserResponse.Loading -> progressBar.visibility = View.VISIBLE
-                is UserResponse.Success -> progressBar.visibility = View.GONE
+                is Success -> {
+                    progressBar.visibility = View.GONE
+                }
+                is Failure -> {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        this, getString(R.string.failure), Toast.LENGTH_LONG).show()
+                }
             }
         })
     }

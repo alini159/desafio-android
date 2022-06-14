@@ -1,7 +1,8 @@
-package com.picpay.desafio.android.domain.remote
+package com.picpay.desafio.android.data.remote
 
-import com.picpay.desafio.android.domain.model.User
 import com.picpay.desafio.android.data.apiclient.PicPayService
+import com.picpay.desafio.android.domain.interfaces.UserRemoteDataSource
+import com.picpay.desafio.android.domain.model.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,20 +18,16 @@ class UserRemoteDataSourceImp(private val service: PicPayService) : UserRemoteDa
                     if (user != null) {
                         success(user)
                     }
-                }else{
+                } else {
                     failure(response.message())
                 }
             }
+
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 t.message?.let {
                     failure(it)
                 }
             }
-
         })
     }
-}
-interface UserRemoteDataSource {
-
-    fun getUser(success: (List<User>)-> Unit, failure: (String) -> Unit)
 }
